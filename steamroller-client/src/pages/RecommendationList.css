@@ -1,4 +1,5 @@
-.App {
+.RecommendationList {
+    display: flex;
     text-align: center;
   }
   
@@ -43,25 +44,9 @@
     margin-right: 0px;
   
   }
-  
-  .sign-in-button {
-    background-color: #1b2838;
-    width:270px;
-    height: 70px;
-    border-radius:30px;
-    color: white;
-    font-size: 17px;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    image-rendering: auto;
-    display:flex;
-  ;
+
   
   
-  
-  }
   
   
   

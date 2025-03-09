@@ -1,3 +1,5 @@
+import requests
+
 """
 URL configuration for steamroller_backend project.
 
@@ -16,7 +18,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .views import steam_login, steam_callback, profile
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("auth/steam/", steam_login, name="steam_login"),
+    path("auth/steam/callback/", steam_callback, name="steam_callback"),
+    path("profile/", profile, name="profile"),
 ]
