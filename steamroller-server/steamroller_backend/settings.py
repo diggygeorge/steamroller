@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.steam',  # Steam provider
+    'allauth.socialaccount.providers.steam',
 ]
 
 MIDDLEWARE = [
@@ -86,19 +86,19 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_REDIRECT_URL = "/"  # Redirect users after login
-ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = '/'  # Redirect users after login
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 SOCIALACCOUNT_PROVIDERS = {
-    "steam": {
-        "APP": {
-            "client_id": "",  # Not required for Steam
-            "secret": "",  # Not required for Steam
-            "key": "YOUR_STEAM_API_KEY",  # Steam API key
+    'steam': {
+        'APP': {
+            'client_id': '',  # Not required for Steam
+            'secret': '',  # Not required for Steam
+            'key': 'YOUR_STEAM_API_KEY',  # Steam API key
         }
     }
 }

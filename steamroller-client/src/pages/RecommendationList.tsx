@@ -2,7 +2,6 @@ import React from "react";
 
 import "./RecommendationList.css";
 
-// Filename - Home.jsx
 
 function onClick() {}
 

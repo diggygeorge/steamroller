@@ -17,7 +17,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from .views import steam_login, steam_callback, profile
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
     path("auth/steam/", steam_login, name="steam_login"),
     path("auth/steam/callback/", steam_callback, name="steam_callback"),
     path("profile/", profile, name="profile"),
+    path("accounts/", include("allauth.urls")),
 ]
