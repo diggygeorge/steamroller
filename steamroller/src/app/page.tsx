@@ -120,7 +120,7 @@ export default function Home() {
         <div>
           <h1 className="text-6xl pb-[20px]">Steamroller</h1>
           <div className="m-auto text-center">
-            <button onClick={() => openWinSteam("http://localhost:3000/")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
+            <button onClick={() => openWinSteam("https://steamroller.vercel.app/")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
               Sign in With Steam
             </button>
           </div>
