@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Steam Login Callback</title>
+</head>
+<body>
+    <script>
+        window.onload = function() {
+
+            const searchParams = window.location.search;
+            
+            if (window.opener) {
+                window.opener.postMessage(searchParams, 'http://localhost:3000');
+            }
+            
+            setTimeout(function() {
+                window.close();
+            }, 1000);
+        };
+    </script>
+</body>
+</html> 

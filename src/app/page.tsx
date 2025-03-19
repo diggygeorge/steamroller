@@ -23,73 +23,53 @@ export default function Home() {
   
 
   const openWinSteam = (redirect: string) => {
-
     try {
-        const endPoint = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${redirect}/profile/connections/callback?state=d5083c416b1df43325a742551826c414&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
+        const endPoint = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${redirect}/steam-callback.html&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
         const strWindowFeatures = 'location=yes,height=660,width=540,scrollbars=no,status=yes';
         const steamWindow = window.open(endPoint,
             'steamLoginNav',
             strWindowFeatures
-            );
+        );
 
-          if (steamWindow != null)
-          {
-                const closeWindow = () => {
-                    steamWindow.close();
-                };
+        if (steamWindow != null) {
+            const closeWindow = () => {
+                steamWindow.close();
+            };
 
-                const steamIntervalHash = setInterval(() => {
-                    if (steamWindow.closed) {
-                        clearInterval(steamIntervalHash);
-                        setSteamID("");
-                    }
+            window.addEventListener('message', function(event) {
 
-                    try {
-                        const search = steamWindow.location.search;
+              if (event.origin !== redirect) return;
 
-                        if (search) {
-                            const errorRegex = search.match(/error=([^&]*)/);
-                            const steamIDRegex = search.match(/openid%2Fid%2F([^&]*)/);
-                            if (steamIDRegex) {
-                                const ID = steamIDRegex[1];
-                                if (ID) {
-                                    clearInterval(steamIntervalHash);
-                                    closeWindow();
-                                    setSteamID(ID);
-                                    getStats(steamID);
-                                }
-                            }
-                            if (errorRegex) {
-                              setError(errorRegex[1]);
-                                if (err) {
-                                    // when user press cancel
-                                    if (err === 'access_denied') {
-                                        clearInterval(steamIntervalHash);
-                                        closeWindow();
-                                        setSteamID("");
-                                    }
-                                }
-                                clearInterval(steamIntervalHash);
-                                closeWindow();
-                                setSteamID("");
-                            }
+                const search = event.data;
+                if (search) {
+                    const errorRegex = search.match(/error=([^&]*)/);
+                    const steamIDRegex = search.match(/openid%2Fid%2F([^&]*)/);
+                    
+                    if (steamIDRegex) {
+                        const ID = steamIDRegex[1];
+                        if (ID) {
+                            closeWindow();
+                            setSteamID(ID);
+                            getStats(steamID);
                         }
-                    } catch (error) {
-                      if (error instanceof Error) {
-                        setError(error.message);
-                        return null;
-                      } else {
-                          throw error;
-                      }
                     }
-            }, 100); 
-          }
-  
+                    
+                    if (!steamIDRegex && errorRegex) {
+                        setError(errorRegex[1]);
+                        if (errorRegex[1] === 'access_denied') {
+                            closeWindow();
+                            setSteamID("");
+                        }
+                    }
+                }
+            }, false);
+        }
     } catch (error) {
         if (error instanceof Error) {
-          setError(error.message);
-          setSteamID("");
-          return null;
+            setError(error.message);
+            console.log(err);
+            setSteamID("");
+            return null;
         } else {
             throw error;
         }
@@ -105,7 +85,7 @@ export default function Home() {
       const response = await fetch(`/api/steam?steamid=${steamID}`);
       const json = await response.json();
   
-      if (!(!json.response || !json.response.games)) {
+      if (json.response && json.response.games) {
         setFound(1);
         setData(json);
       }
@@ -120,7 +100,7 @@ export default function Home() {
         <div>
           <h1 className="text-6xl pb-[20px]">Steamroller</h1>
           <div className="m-auto text-center">
-            <button onClick={() => openWinSteam("steamroller.vercel.app/")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
+            <button onClick={() => openWinSteam("https://steamroller.vercel.app")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
               Sign in With Steam
             </button>
           </div>
