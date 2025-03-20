@@ -78,19 +78,29 @@ export default function Home() {
 
   async function getStats(steamID: string) {
     if (!steamID) {
-      alert("Failed to retrieve Steam ID.");
+      setError("Failed to retrieve Steam ID.");
+      setFound(-1);
       return;
     }  
     try {
       const response = await fetch(`/api/steam?steamid=${steamID}`);
       const json = await response.json();
   
+      if (!response.ok) {
+        throw new Error(json.error || 'Failed to fetch Steam data');
+      }
+
       if (json.response && json.response.games) {
         setFound(1);
         setData(json);
+        setError(null);
+      } else {
+        setError('No game data available for this account');
+        setFound(-1);
       }
     } catch (error) {
       setFound(-1);
+      setError(error instanceof Error ? error.message : 'An error occurred while fetching Steam data');
       console.error("Error fetching Steam data:", error);
     }
   }
@@ -105,6 +115,11 @@ export default function Home() {
             </button>
           </div>
           <div className="pt-[50px] text-center">
+            {err && (
+              <div className="text-red-500 mb-4">
+                {err}
+              </div>
+            )}
             {isFound > -1 ? 
             (data && data.response?.games ? (
               <>
