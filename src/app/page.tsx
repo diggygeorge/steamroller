@@ -37,8 +37,8 @@ export default function Home() {
             };
 
             window.addEventListener('message', function(event) {
-
-              if (event.origin !== redirect) return;
+                // Verify the origin matches our domain
+                if (event.origin !== 'https://steamroller.vercel.app') return;
 
                 const search = event.data;
                 if (search) {
@@ -50,7 +50,7 @@ export default function Home() {
                         if (ID) {
                             closeWindow();
                             setSteamID(ID);
-                            getStats(steamID);
+                            getStats(ID);
                         }
                     }
                     

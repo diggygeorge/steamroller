@@ -6,11 +6,11 @@
 <body>
     <script>
         window.onload = function() {
-
             const searchParams = window.location.search;
             
             if (window.opener) {
-                window.opener.postMessage(searchParams, 'http://localhost:3000');
+                // Use the same origin as the current page
+                window.opener.postMessage(searchParams, window.location.origin);
             }
             
             setTimeout(function() {
