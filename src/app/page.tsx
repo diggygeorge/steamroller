@@ -50,7 +50,7 @@ export default function Home() {
                         if (ID) {
                             closeWindow();
                             setSteamID(ID);
-                            getStats(ID);
+                            getStats(steamID);
                         }
                     }
                     
