@@ -50,7 +50,7 @@ export default function Home() {
                         if (ID) {
                             closeWindow();
                             setSteamID(ID);
-                            getStats(steamID);
+                            getStats();
                         }
                     }
                     
@@ -76,7 +76,7 @@ export default function Home() {
     }
   }
 
-  async function getStats(steamID: string) {
+  async function getStats() {
     if (!steamID) {
       setError("Failed to retrieve Steam ID.");
       setFound(-1);
