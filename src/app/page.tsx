@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import OpenAI from "openai";
 
 
 
@@ -19,6 +20,7 @@ export default function Home() {
   const [data, setData] = useState<SteamData | null>(null);
   const [isFound, setFound] = useState(-1);
   const [err, setError] = useState<string | null>(null);
+  const [recGames, setGames] = useState<string | null>(null);
   
 
   const openWinSteam = (redirect: string) => {
@@ -101,14 +103,41 @@ export default function Home() {
     }
   }
 
+     async function generate() {
+      const games = document.getElementsByClassName("game");
+      let gameText = "";
+      for (let i = 0; i < games.length; i++)
+      {
+        gameText += " " + (games[i].innerHTML).split(':', 1)[0];
+      }
+      console.log(gameText);
+
+      const client = new OpenAI({apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, dangerouslyAllowBrowser: true});
+
+      const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+            {
+                role: "user",
+                content: 'Generate a list, and a list only, of recommended Steam games based on the following inputs:' + gameText,
+            },
+        ],
+    });
+    setFound(0);
+    setGames(completion.choices[0].message.content);
+  };
+
+  const gameArray = recGames?.match(/\d+\..*?(?=\s\d+\.|$)/g) || [];
+
   return (
     <div className="bg-[#262A37] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
         <div>
           <h1 className="text-6xl pb-[20px]">Steamroller</h1>
           <div className="m-auto text-center">
-            <button onClick={() => openWinSteam("https://steamroller.vercel.app")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
+            {isFound === -1 ?
+            (<button onClick={() => openWinSteam("https://steamroller.vercel.app")} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">
               Sign in With Steam
-            </button>
+            </button>) : <></>}
           </div>
           <div className="pt-[50px] text-center">
             {err && (
@@ -116,20 +145,35 @@ export default function Home() {
                 {err}
               </div>
             )}
-            {isFound > -1 ? 
+            {isFound === 1 ? 
             (data && data.response?.games ? (
               <>
                 <p className="text-2xl underline pb-[20px]">Games Owned:</p>
-                <ul>
+                <ul id="games">
                   {data.response.games.map((game) => (
-                    <li key={game.appid}>{game.name}: {Math.round(game.playtime_forever / 60 * 100) / 100} hours</li>
+                    <li className="game" key={game.appid}>{game.name}: {Math.round(game.playtime_forever / 60 * 100) / 100} hours</li>
                   ))}
                 </ul>
+                <div className="pt-[20px]">
+                  <button onClick={generate} className="bg-[#1B1D25] rounded-sm border-1 p-2 hover:bg-[#111215] hover:cursor-pointer">Generate</button>
+                </div>
               </>
             ) : (
               <p>No game data available.</p>
             ))
             : <p></p>}
+            {(recGames !== null) ? (
+              <>
+                <p className="text-2xl underline pb-[20px]">Recommended Games:</p>
+                <ul>
+                  {gameArray.map((game) => (
+                    <li key={game}>{game}</li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
     </div>
