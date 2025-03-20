@@ -16,7 +16,6 @@ export default function Home() {
     };
   }
 
-  const [steamID, setSteamID] = useState("");
   const [data, setData] = useState<SteamData | null>(null);
   const [isFound, setFound] = useState(-1);
   const [err, setError] = useState<string | null>(null);
@@ -49,8 +48,7 @@ export default function Home() {
                         const ID = steamIDRegex[1];
                         if (ID) {
                             closeWindow();
-                            setSteamID(ID);
-                            getStats();
+                            getStats(ID);
                         }
                     }
                     
@@ -58,7 +56,6 @@ export default function Home() {
                         setError(errorRegex[1]);
                         if (errorRegex[1] === 'access_denied') {
                             closeWindow();
-                            setSteamID("");
                         }
                     }
                 }
@@ -68,7 +65,6 @@ export default function Home() {
         if (error instanceof Error) {
             setError(error.message);
             console.log(err);
-            setSteamID("");
             return null;
         } else {
             throw error;
@@ -76,7 +72,7 @@ export default function Home() {
     }
   }
 
-  async function getStats() {
+  async function getStats(steamID: string) {
     if (!steamID) {
       setError("Failed to retrieve Steam ID.");
       setFound(-1);
